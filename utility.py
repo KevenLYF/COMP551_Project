@@ -1,4 +1,5 @@
-file1 =
+import numpy as np
+
 
 def preprocessing(features):
     x = []
@@ -18,6 +19,14 @@ def preprocessing(features):
                     break
                 r[int(ratio[0])] = int(ratio[1])
 
-            x.extend(r)
+            x.append(r)
 
 
+    return x, y
+
+
+file1 = "./aclImdb/train/labeledBow.feat"
+x_train, y_train = preprocessing(file1)
+
+x_train = np.array(x_train)
+y_train = np.array(y_train)
