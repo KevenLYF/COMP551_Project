@@ -8,7 +8,7 @@ trainX, trainY = preprocessing("./aclImdb/train/labeledBow.feat")
 c_range = []
 d_range = [True, False]
 c = 1
-for i in range(30):
+for i in range(20):
     c *= 0.8
     c_range.append(c)
 
