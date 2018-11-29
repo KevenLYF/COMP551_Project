@@ -23,10 +23,3 @@ def preprocessing(features):
 
 
     return x, y
-
-
-file1 = "./aclImdb/train/labeledBow.feat"
-x_train, y_train = preprocessing(file1)
-
-x_train = np.array(x_train)
-y_train = np.array(y_train)
