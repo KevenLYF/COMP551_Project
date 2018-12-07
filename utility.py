@@ -30,7 +30,8 @@ def preprocessing2(features):
     with open(features, 'r') as f:
 
         for row in f:
-            y.append(row[0])
+            rate = -1 if int(row[0]) <= 4 else 1
+            y.append(rate)
             feature = row[1:]
             r = [0] * 10000
 
@@ -43,7 +44,7 @@ def preprocessing2(features):
                 r[int(ratio[0])] = 0 if int(ratio[1]) == 0 else 1
 
             x.append(r)
-
+   
     return x, y
 
 def readValue(file):
@@ -146,7 +147,7 @@ def fvpair_binary(file):
                 f.write(" " + str(data[i][j][0]) + ":" + str(data[i][j][1]))
             f.write("\n")
 
-# preprocessing("./aclImdb/train/labeledBow.feat")[0]
+preprocessing2("./aclImdb/train/labeledBow.feat")[1]
 # fvpair("./aclImdb/train/labeledBow.feat")
 # for i in range(len(data)):
 #     print(data[i])
