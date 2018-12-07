@@ -17,10 +17,32 @@ def preprocessing(features):
 
                 if int(ratio[0]) >= 10000:
                     break
-                r[int(ratio[0])] = int(ratio[1])
 
             x.append(r)
 
+    return x, y
+
+
+def preprocessing2(features):
+    x = []
+    y = []
+
+    with open(features, 'r') as f:
+
+        for row in f:
+            y.append(row[0])
+            feature = row[1:]
+            r = [0] * 10000
+
+            for ratio in feature.split(' ')[1:]:
+                ratio = ratio.split(':')
+
+                if int(ratio[0]) >= 10000:
+                    break
+                # ***********************************************
+                r[int(ratio[0])] = 0 if int(ratio[1]) == 0 else 1
+
+            x.append(r)
 
     return x, y
 
@@ -57,8 +79,8 @@ def fvpair(file):
 
 
 
-
-fvpair("./aclImdb/train/labeledBow.feat")
+preprocessing("./aclImdb/train/labeledBow.feat")[0]
+#fvpair("./aclImdb/train/labeledBow.feat")
 # fvpair("./aclImdb/test/labeledBow.feat")
 # for i in range(len(data)):
 #     print(data[i])
