@@ -1,14 +1,10 @@
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
-import numpy as np
-import os
-import re
-import pandas as pd
 import warnings; warnings.simplefilter('ignore')
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from utility import preprocessing2, clean_text, load_train_test_imdb_data
+from utility import preprocessing2, clean_text, load_imdb_data, load_elec_data
 import matplotlib.pyplot as plt
 
 def gridSearch_SVM(X_train, y_train):
@@ -39,7 +35,7 @@ def SVM_ngrams(train, test, n):
     training_features = vectorizer.fit_transform(train["text"])
     test_features = vectorizer.transform(test["text"])
 
-    temp_c = 10
+    temp_c = 60
     best_acc = 0
     max_c = 1
     c_range = []
@@ -54,20 +50,28 @@ def SVM_ngrams(train, test, n):
             max_c = temp_c
         c_range.append(temp_c)
         acc_range.append(acc)
-        temp_c *= 0.7
+        temp_c *= 0.8
         print("Accuracy on the IMDB dataset: {:.2f}".format(acc * 100))
 
     # Evaluation
     print("Best accuracy is {:.2f} \n Best C is {}".format(best_acc * 100, max_c))
     return c_range, acc_range
 
-def funny_plot(x, y):
+def funny_plot(x, y, n):
+    gram = ""
+    if n == 1:
+        gram = "uni"
+    elif n == 2:
+        gram = "bi"
+    else:
+        gram = "3-"
     plt.plot(x, y, 'ro')
-    plt.title('Unigram C vs Accuracy')
+    plt.title(gram + "gram C vs Accuracy")
     plt.xlabel('Hyper Parameter C')
     plt.ylabel('Accuracy')
     plt.show()
 
-train_data, test_data = load_train_test_imdb_data(data_dir="aclImdb/")
+# train_data, test_data = load_imdb_data(data_dir="aclImdb/")
+train_data, test_data = load_elec_data(data_dir="elec/")
 c_array, acc_array = SVM_ngrams(train_data, test_data, 3)
-funny_plot(c_array, acc_array)
+funny_plot(c_array, acc_array, 3)
