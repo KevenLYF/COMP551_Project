@@ -76,8 +76,6 @@ def preprocessing_elec(labels, reviews):
 
     return
 
-preprocessing_elec("./elec/elec-10k-train.cat", "./elec/elec-10k-train.txt")
-
 
 def readValue(file):
     with open(file, 'r') as f:
@@ -269,6 +267,7 @@ def load_elec_data(data_dir):
     return data["train"], data["test"]
 
 
+# preprocessing_elec("./elec/elec-10k-train.cat", "./elec/elec-10k-train.txt")
 # preprocessing2("./aclImdb/train/labeledBow.feat")[1]
 # fvpair("./aclImdb/train/labeledBow.feat")
 # for i in range(len(data)):
