@@ -47,14 +47,44 @@ def preprocessing2(features):
                 r[int(ratio[0])] = 0 if int(ratio[1]) == 0 else 1
 
             x.append(r)
-   
+
     return x, y
+
+
+def preprocessing_elec(labels, reviews):
+    y = []
+    with open(labels, 'r') as f:
+        for row in f:
+            y.append(int(row))
+    with open(reviews, 'r') as review_file:
+        neg = 0
+        pos = 0
+        num = 0
+        for row in review_file:
+            # negative
+            if y[num] == 1:
+                with open("./elec/train/neg/" + str(neg) + "_1.txt", "w") as neg_f:
+                    neg_f.write(row)
+                    neg += 1
+
+            # positive
+            else:
+                with open("./elec/train/pos/" + str(pos) + "_7.txt", "w") as pos_f:
+                    pos_f.write(row)
+                    pos += 1
+            num += 1
+
+    return
+
+preprocessing_elec("./elec/elec-10k-train.cat", "./elec/elec-10k-train.txt")
+
 
 def readValue(file):
     with open(file, 'r') as f:
         values = f.read().splitlines()
 
     return values
+
 
 def fvpair(file):
     lcount = 0
@@ -85,6 +115,7 @@ def fvpair(file):
             f.write(str(data[i][0]))
             for j in range(1, len(data[i])):
                 f.write(" " + str(data[i][j][0]) + ":" + str(data[i][j][1]))
+
 
 def fvpair_value(file, value):
     lcount = 0
@@ -117,6 +148,7 @@ def fvpair_value(file, value):
                 f.write(" " + str(data[i][j][0]) + ":" + str(data[i][j][1]))
             f.write("\n")
 
+
 def fvpair_binary(file):
     lcount = 0
     with open(file, 'r') as f:
@@ -148,14 +180,16 @@ def fvpair_binary(file):
                 f.write(" " + str(data[i][j][0]) + ":" + str(data[i][j][1]))
             f.write("\n")
 
+
 """
 Applies some pre-processing on the given text.
-
 Steps :
 - Removing HTML tags
 - Removing punctuation
 - Lowering text
 """
+
+
 def clean_text(text):
     # remove HTML tags
     text = re.sub(r'<.*?>', '', text)
@@ -176,15 +210,41 @@ def clean_text(text):
 
     return text
 
+
 """Loads the IMDB train/test datasets from a folder path.
 Input:
 data_dir: path to the "aclImdb" folder.
-
 Returns:
 train/test datasets as pandas dataframes.
 """
-def load_train_test_imdb_data(data_dir):
 
+
+def load_imdb_data(data_dir):
+    data = {}
+    for split in ["train", "test"]:
+        data[split] = []
+        for sentiment in ["neg", "pos"]:
+            score = 1 if sentiment == "pos" else 0
+
+            path = os.path.join(data_dir, split, sentiment)
+            file_names = os.listdir(path)
+            for f_name in file_names:
+                with open(os.path.join(path, f_name), "r") as f:
+                    review = f.read()
+                    data[split].append([review, score])
+
+    np.random.shuffle(data["train"])
+    data["train"] = pd.DataFrame(data["train"],
+                                 columns=['text', 'sentiment'])
+
+    np.random.shuffle(data["test"])
+    data["test"] = pd.DataFrame(data["test"],
+                                columns=['text', 'sentiment'])
+
+    return data["train"], data["test"]
+
+
+def load_elec_data(data_dir):
     data = {}
     for split in ["train", "test"]:
         data[split] = []
@@ -215,4 +275,3 @@ def load_train_test_imdb_data(data_dir):
 #     print(data[i])
 
 # fvpair_binary("./aclImdb/test/labeledBow.feat")
-
